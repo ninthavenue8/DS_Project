@@ -1,0 +1,90 @@
+---
+title: "How R-Maps Showed an Old Industry a New Route"
+author: "Amarita Natt & Yujia Guan <br /> Econ One Research"
+output: 
+  revealjs::revealjs_presentation: 
+    theme: simple
+    highlight: haddock
+    center: true
+    transition: slide
+---
+
+
+## Competition Among DTLA Baristas
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+<style>
+.reveal section img { background:none; border:none; box-shadow:none; }
+</style>
+
+Question: who are buying coffees from Starbucks, Peet's, Blue Bottle, and other baristas?
+
+## 
+### Starbucks (Green) vs Peet's (Red) Near Downtown LA
+```{r pressure, echo=FALSE, warning=FALSE, message=FALSE}
+## import data
+library(readxl)
+library(leaflet)
+#library(webshot)
+library(htmlwidgets)
+#library(mapview)
+library(tibble)
+#library(writexl)
+
+starbucks <- read_xlsx("~/Desktop/SatRday/Store Locations.xlsx", sheet = "Starbucks")
+peets <- read_xlsx("~/Desktop/SatRday/Store Locations.xlsx", sheet = "Peets")
+other <- read_xlsx("~/Desktop/SatRday/Store Locations.xlsx", sheet = "Other")
+
+#set colors
+peets_icon <- awesomeIcons(
+  icon = 'ios-close',
+  iconColor = 'black',
+  library = 'ion',
+  markerColor = 'red' 
+)
+
+starbucks_icon <- awesomeIcons(
+  icon = 'ios-close',
+  iconColor = 'black',
+  library = 'ion',
+  markerColor = 'green' 
+)
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
+map1 <- 
+  leaflet() %>% 
+  addTiles() %>%
+   addAwesomeMarkers(~lon, ~lat, popup = ~as.character(peets$Store), label= ~as.character(peets$Store), icon = peets_icon, data=peets) %>%
+  addAwesomeMarkers(~lon, ~lat, popup = ~as.character(starbucks$Store), label= ~as.character(starbucks$Store), icon = starbucks_icon, data=starbucks) %>%
+  addCircles(~lon, ~lat, radius = 800, data=starbucks)
+  
+map1
+
+
+#leaflet() %>%
+#  setView(-118.2568298, 34.0495305, zoom = 10) %>% 
+#  addTiles() %>%
+#  addMarkers(-118.2568298, 34.0495305, popup = "Starbucks")
+
+```
+
+## 
+### Starbucks (Green), Peet's (Red), and other baristas (Blue) Near Downtown LA
+
+```{r, echo=FALSE}
+  
+map2 <- 
+  leaflet() %>% 
+  addTiles() %>%
+  addMarkers(~lon, ~lat, popup = ~as.character(other$Store), label= ~as.character(other$Store), data=other) %>%
+  addAwesomeMarkers(~lon, ~lat, popup = ~as.character(peets$Store), label= ~as.character(peets$Store), icon = peets_icon, data=peets) %>%
+  addAwesomeMarkers(~lon, ~lat, popup = ~as.character(starbucks$Store), label= ~as.character(starbucks$Store), icon = starbucks_icon, data=starbucks) %>%
+  addCircles(~lon, ~lat, radius = 800, data=starbucks)
+  
+map2
+
+```
+
